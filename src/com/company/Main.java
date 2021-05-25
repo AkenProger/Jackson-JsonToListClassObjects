@@ -1,11 +1,13 @@
 package com.company;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import jdk.internal.org.objectweb.asm.TypeReference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +22,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String url = "https://jsonplaceholder.typicode.com/posts";
+        String url = "https://cat-fact.herokuapp.com/facts";
         HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         httpURLConnection.setRequestMethod("GET");
 
@@ -37,25 +39,22 @@ public class Main {
                 result.append(line);
             }
 
-           Gson gson = new GsonBuilder()
-                    .setPrettyPrinting().create();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonToList = String.valueOf(result);
 
-            String classToJson = String.valueOf(result);
-               //toList
-            List<BlogPostDetails>  blogPostDetailsList;
-            blogPostDetailsList = gson.fromJson(classToJson, new TypeToken<List<BlogPostDetails>>(){}.getType());
-            System.out.println("List ->"+blogPostDetailsList);
-
-            //toArrayClass
-            BlogPostDetails[] blogPostDetails = gson.fromJson(classToJson, new TypeToken<BlogPostDetails[]>(){}.getType());
-
-
-            for (BlogPostDetails blogPostDetails1: blogPostDetails) {
-                System.out.println(" ID = "+blogPostDetails1.getId());
-                System.out.println(" TITLE = "+blogPostDetails1.getTitle());
-                System.out.println(" BODY "+blogPostDetails1.getBody());
-
+            List<BlogAddOperations> blogAddOperations;
+            blogAddOperations = objectMapper.readValue(jsonToList, new TypeReference<List<BlogAddOperations>>() {
+            });
+            for (BlogAddOperations blogAddOperations1: blogAddOperations) {
+                System.out.println(blogAddOperations1+"\n");
             }
+
+
+
+
+
+
+
 
         }
     }
